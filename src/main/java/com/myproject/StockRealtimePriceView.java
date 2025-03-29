@@ -17,7 +17,7 @@ public class StockRealtimePriceView implements StockViewer {
         }
     }
 
-    public Map<String, Double> get(String stockCode) {
+    public Map<String, Double> get() {
         return Collections.unmodifiableMap(lastPrices);
     }
 

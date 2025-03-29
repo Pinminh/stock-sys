@@ -33,7 +33,7 @@ public class StockRealtimePriceViewTest {
     public void updatePriceWhenHistoryNotFound() {
         StockPrice stockPrice = new StockPrice("codeA", 10.0, 25, 1743250124);
         viewer.onUpdate(stockPrice);
-        Map<String, Double> priceMap = viewer.get("codeA");
+        Map<String, Double> priceMap = viewer.get();
         assertEquals(10.0, priceMap.get("codeA"), doubleError);
     }
 
@@ -45,7 +45,7 @@ public class StockRealtimePriceViewTest {
             new StockPrice("codeA", 10.01, 25, 1743250181),
         };
         for (StockPrice price : prices) viewer.onUpdate(price);
-        Map<String, Double> priceMap = viewer.get("codeA");
+        Map<String, Double> priceMap = viewer.get();
         assertEquals(10.01, priceMap.get("codeA"), doubleError);
         assertEquals(9.0, priceMap.get("codeB"), doubleError);
     }
@@ -61,7 +61,7 @@ public class StockRealtimePriceViewTest {
             new StockPrice("codeA", 2.543, 25, 1743250181),
         };
         for (StockPrice price : prices) viewer.onUpdate(price);
-        Map<String, Double> priceMap = viewer.get("codeA");
+        Map<String, Double> priceMap = viewer.get();
         assertEquals(2.543, priceMap.get("codeA"), doubleError);
     }
 
@@ -74,7 +74,7 @@ public class StockRealtimePriceViewTest {
             new StockPrice("codeA", 10.0, 25, 1743250124),
         };
         for (StockPrice price : prices) viewer.onUpdate(price);
-        Map<String, Double> priceMap = viewer.get("codeA");
+        Map<String, Double> priceMap = viewer.get();
         assertEquals(10.0, priceMap.get("codeA"), doubleError);
     }
 
