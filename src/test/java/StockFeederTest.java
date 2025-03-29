@@ -9,6 +9,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import com.myproject.StockFeeder;
+import com.myproject.StockTickerView;
 import com.myproject.Stock;
 
 
@@ -69,16 +70,59 @@ public class StockFeederTest {
         assertNotNull(feeder.getStockWithCode("codeN"));
     }
 
+    @Test
+    public void hasStockWithCodeWorksOnNewStock() {
+        feeder.addStock(new Stock("codeF", "nameF"));
+        assertTrue(feeder.hasStockWithCode("codeF"));
+    }
+
+    @Test
+    public void hasStockWithCodeWorksOnNonExistingStock() {
+        assertFalse(feeder.hasStockWithCode("weird_code_here"));
+    }
+
+    @Test
+    public void notFoundViewerWhenNotRegisterGivenStockViewer() {
+        StockTickerView tickerView = new StockTickerView();
+        assertFalse(feeder.hasViewerWithStockCode(tickerView, "codeX"));
+    }
+
+    @Test
+    public void viewerShouldBeFoundWhenRegisteredWithStockFeeder() {
+        Stock stock = new Stock("stockCode", "stockName");
+        feeder.addStock(stock);
+        StockTickerView viewer = new StockTickerView();
+        feeder.registerViewer("stockCode", viewer);
+        assertTrue(feeder.hasViewerWithStockCode(viewer, "stockCode"));
+    }
+
+    @Test
+    public void viewerShouldNotRegisterWhenStockNotFound() {
+        StockTickerView viewer = new StockTickerView();
+        feeder.registerViewer("stockAAA", viewer);
+        assertFalse(feeder.hasViewerWithStockCode(viewer, "stockAAA"));
+    }
+
+    @Test
+    public void viewerShouldNotRegisterWhenViewerDuplicated() {
+        Stock stock = new Stock("stockFFF", "nameFFF");
+        feeder.addStock(stock);
+        StockTickerView viewer = new StockTickerView();
+        feeder.registerViewer("stockFFF", viewer);
+        feeder.registerViewer("stockFFF", viewer);
+        assertTrue(feeder.hasViewerWithStockCode(viewer, "stockFFF"));
+    }
+
     @Rule
     public TestWatcher watcher = new TestWatcher() {
         @Override
         protected void starting(Description description) {
-            System.out.println("Starting test: " + description.getMethodName());
+            System.out.println("< Starting test: " + description.getMethodName());
         }
 
         @Override
         protected void finished(Description description) {
-            System.out.println("Finished test: " + description.getMethodName());
+            System.out.println("> Finished test: " + description.getMethodName());
         }
     };
 }
