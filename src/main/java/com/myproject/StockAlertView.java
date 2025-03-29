@@ -23,7 +23,7 @@ public class StockAlertView implements StockViewer {
     public void onUpdate(StockPrice stockPrice) {
         String stockCode = stockPrice.getCode();
         double newPrice = stockPrice.getAvgPrice();
-        if (isOutOfThreshold(newPrice)) {
+        if (isOutOfThreshold(newPrice) && isUpdateFeasible(stockCode, newPrice)) {
             lastAlertedPrices.put(stockCode, newPrice);
             Logger.logAlert(stockCode, newPrice);
         }
@@ -39,6 +39,11 @@ public class StockAlertView implements StockViewer {
 
     public void clear() {
         lastAlertedPrices.clear();
+    }
+
+    private boolean isUpdateFeasible(String stockCode, double newPrice) {
+        if (lastAlertedPrices.get(stockCode) == null) return true;
+        return !lastAlertedPrices.get(stockCode).equals(newPrice);
     }
 
     // private void alertAbove(String stockCode, double price) {
