@@ -12,7 +12,11 @@ public class StockFeeder {
 
     public static StockFeeder getInstance() {
         // TODO: Implement Singleton logic
-        return null;
+        if (instance == null) {
+            instance = new StockFeeder();
+            return instance;
+        }
+        return instance;
     }
 
     public void addStock(Stock stock) {
