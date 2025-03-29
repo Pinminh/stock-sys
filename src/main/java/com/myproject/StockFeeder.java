@@ -82,6 +82,10 @@ public class StockFeeder {
     }
 
     public void notify(StockPrice stockPrice) {
-        // TODO: Implement notifying registered viewers about price updates
+        String stockCode = stockPrice.getCode();
+        if (viewers.get(stockCode) == null) return;
+
+        for (StockViewer viewer : viewers.get(stockCode))
+            viewer.onUpdate(stockPrice);
     }
 }
