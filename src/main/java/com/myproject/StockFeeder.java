@@ -7,11 +7,9 @@ public class StockFeeder {
     private Map<String, List<StockViewer>> viewers = new HashMap<>();
     private static StockFeeder instance = null;
 
-    // TODO: Implement Singleton pattern
     private StockFeeder() {}
 
     public static StockFeeder getInstance() {
-        // TODO: Implement Singleton logic
         if (instance == null) {
             instance = new StockFeeder();
             return instance;
@@ -20,7 +18,22 @@ public class StockFeeder {
     }
 
     public void addStock(Stock stock) {
-        // TODO: Implement adding a stock to stockList
+        String newStockCode = stock.getCode();
+        stockList.removeIf(
+            oldStock -> oldStock.getCode().equals(newStockCode)
+        );
+        stockList.add(stock);
+    }
+
+    public boolean hasNoStock() {
+        return stockList.isEmpty();
+    }
+
+    public Stock getStockWithCode(String stockCode) {
+        Optional<Stock> stockOption = stockList.stream()
+            .filter(stock -> stock.getCode().equals(stockCode))
+            .findAny();
+        return stockOption.isPresent() ? stockOption.get() : null;
     }
 
     public void registerViewer(String code, StockViewer stockViewer) {
