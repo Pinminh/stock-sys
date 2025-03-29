@@ -1,5 +1,6 @@
 package com.myproject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,19 @@ public class StockRealtimePriceView implements StockViewer {
 
     @Override
     public void onUpdate(StockPrice stockPrice) {
-        // TODO: Implement logic to check if price has changed and log it
+        String stockCode = stockPrice.getCode();
+        double newPrice = stockPrice.getAvgPrice();
+        if (lastPrices.get(stockCode) == null || !lastPrices.get(stockCode).equals(newPrice)) {
+            lastPrices.put(stockCode, newPrice);
+            Logger.logRealtime(stockCode, newPrice);
+        }
+    }
+
+    public Map<String, Double> get(String stockCode) {
+        return Collections.unmodifiableMap(lastPrices);
+    }
+
+    public void clear() {
+        lastPrices.clear();
     }
 }
