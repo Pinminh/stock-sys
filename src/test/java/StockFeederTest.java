@@ -113,16 +113,45 @@ public class StockFeederTest {
         assertTrue(feeder.hasViewerWithStockCode(viewer, "stockFFF"));
     }
 
+    @Test
+    public void viewerShouldNotUnregisterWhenStockNotFound() {
+        Stock stock = new Stock("stockFFF", "nameFFF");
+        feeder.addStock(stock);
+        StockTickerView viewer = new StockTickerView();
+        feeder.registerViewer("stockFFF", viewer);
+        feeder.unregisterViewer("stockAAA", viewer);
+        assertTrue(feeder.hasViewerWithStockCode(viewer, "stockFFF"));
+    }
+
+    @Test
+    public void viewerShouldNotUnregisterWhenNotRegistered() {
+        Stock stock = new Stock("StockFFF", "nameFFF");
+        feeder.addStock(stock);
+        StockTickerView viewer = new StockTickerView();
+        feeder.unregisterViewer("stockFFF", viewer);
+        assertFalse(feeder.hasViewerWithStockCode(viewer, "stockFFF"));
+    }
+
+    @Test
+    public void viewerCanUnregisterWhenPreviouslyRegistered() {
+        feeder.addStock(new Stock("codeE", "codeE"));
+        StockTickerView viewer = new StockTickerView();
+        feeder.registerViewer("codeE", viewer);
+        assertTrue(feeder.hasViewerWithStockCode(viewer, "codeE"));
+        feeder.unregisterViewer("codeE", viewer);
+        assertFalse(feeder.hasViewerWithStockCode(viewer, "codeE"));
+    }
+
     @Rule
     public TestWatcher watcher = new TestWatcher() {
         @Override
         protected void starting(Description description) {
-            System.out.println("< Starting test: " + description.getMethodName());
+            System.out.println("\n< Starting test: " + description.getMethodName());
         }
 
         @Override
         protected void finished(Description description) {
-            System.out.println("> Finished test: " + description.getMethodName());
+            System.out.println("> Finished test: " + description.getMethodName() + "\n");
         }
     };
 }
