@@ -2,7 +2,6 @@ package com.myproject;
 
 import java.util.*;
 
-import com.myproject.Logger;
 
 public class StockFeeder {
     private List<Stock> stockList = new ArrayList<>();
@@ -69,7 +68,17 @@ public class StockFeeder {
     }    
 
     public void unregisterViewer(String code, StockViewer stockViewer) {
-        // TODO: Implement unregister logic, including error logging
+        if (!hasStockWithCode(code) || !hasViewerWithStockCode(stockViewer, code)) {
+            Logger.errorUnregister(code);
+            return;
+        }
+
+        if (viewers.get(code) == null) {
+            Logger.errorUnregister(code);
+            return;
+        }
+
+        viewers.get(code).remove(stockViewer);
     }
 
     public void notify(StockPrice stockPrice) {
