@@ -2,6 +2,8 @@ package com.myproject;
 
 import java.util.*;
 
+import com.myproject.Logger;
+
 public class StockFeeder {
     private List<Stock> stockList = new ArrayList<>();
     private Map<String, List<StockViewer>> viewers = new HashMap<>();
@@ -29,6 +31,19 @@ public class StockFeeder {
         return stockList.isEmpty();
     }
 
+    public boolean hasStockWithCode(String stockCode) {
+        return stockList.stream().anyMatch(
+            stock -> stock.getCode().equals(stockCode)
+        );
+    }
+
+    public boolean hasViewerWithStockCode(StockViewer viewer, String stockCode) {
+        List<StockViewer> viewerList = viewers.get(stockCode);
+        if (viewerList == null) return false;
+
+        return viewerList.stream().anyMatch(viewerInList -> viewerInList == viewer);
+    }
+
     public Stock getStockWithCode(String stockCode) {
         Optional<Stock> stockOption = stockList.stream()
             .filter(stock -> stock.getCode().equals(stockCode))
@@ -36,8 +51,21 @@ public class StockFeeder {
         return stockOption.isPresent() ? stockOption.get() : null;
     }
 
+    public void clear() {
+        stockList.clear();
+        viewers.clear();
+    }
+
     public void registerViewer(String code, StockViewer stockViewer) {
-        // TODO: Implement registration logic, including checking stock existence
+        if (!hasStockWithCode(code) || hasViewerWithStockCode(stockViewer, code)) {
+            Logger.errorRegister(code);
+            return;
+        }
+
+        if (viewers.get(code) == null)
+            viewers.put(code, new ArrayList<StockViewer>());
+        
+        viewers.get(code).add(stockViewer);
     }    
 
     public void unregisterViewer(String code, StockViewer stockViewer) {
